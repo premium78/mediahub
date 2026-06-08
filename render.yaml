@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: mediahub
+    env: node
+    buildCommand: bash build.sh
+    startCommand: node server.js
+    plan: free

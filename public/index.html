@@ -5,21 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MediaHub</title>
   <meta name="theme-color" content="#6366F1">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="MediaHub">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="css/themes.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/home.css">
   <link rel="stylesheet" href="css/settings.css">
 </head>
 <body>
 
-  <button class="settings-trigger" onclick="toggleSettings(true)">⚙️</button>
-
   <div class="sheet-overlay" id="settingsOverlay" onclick="toggleSettings(false)"></div>
-
   <div class="bottom-sheet" id="settingsSheet">
     <div class="drag-handle"></div>
     <div class="header-main">
@@ -37,96 +30,88 @@
           <span class="slider"></span>
         </label>
       </div>
-      <div class="setting-row">
-        <div>
-          <div class="setting-title">Default Quality</div>
-          <div class="setting-desc">Auto-select download quality</div>
-        </div>
-        <select id="defaultQuality" onchange="saveDefaultQuality()">
-          <option value="ask">Ask every time</option>
-          <option value="1080">1080p</option>
-          <option value="720">720p</option>
-          <option value="480">480p</option>
-          <option value="360">360p</option>
-        </select>
-      </div>
     </div>
-    <div class="sheet-footer">
-      MediaHub v1.1 — Built with ❤️
+    <div class="sheet-footer">MediaHub v1.2 — Built with ❤️</div>
+  </div>
+
+  <div class="header">
+    <div class="logo">
+      <span class="logo-icon">🎬</span>
+      <span class="logo-text">MediaHub</span>
     </div>
+    <button class="settings-trigger" onclick="toggleSettings(true)">⚙️</button>
   </div>
 
-  <h1>🎬 MediaHub</h1>
-  <p class="tagline">Download any video with just a link</p>
-
-  <div class="platforms">
-    <span class="platform">▶ YouTube</span>
-    <span class="platform">🎵 TikTok</span>
-    <span class="platform">📘 Facebook</span>
-    <span class="platform">📸 Instagram</span>
+  <div class="welcome">
+    <div class="trust-strip">
+  <span>✓ No Login</span>
+  <span>✓ No Ads</span>
+  <span>✓ Free</span>
+  <span>✓ Secure</span>
+</div>
   </div>
 
-  <div class="input-box">
-    <input type="text" id="urlInput" placeholder="Paste video link here..." />
-    <div class="buttons">
-      <button class="paste-btn" onclick="pasteUrl()">📋 Paste</button>
-      <button onclick="getVideo()">🔍 Find Video</button>
+  <div class="tool-grid">
+
+    <div class="tool-card active" onclick="window.location.href='downloader.html'">
+      <div class="tool-icon">📥</div>
+      <div class="tool-name">Downloader</div>
+      <div class="tool-desc">YouTube, TikTok, Facebook, Instagram</div>
+      <div class="tool-badge ready">Ready</div>
     </div>
-  </div>
 
-  <div class="loader" id="loader">
-    <div class="spinner"></div>
-    <p id="loaderText">Loading...</p>
-  </div>
-
-  <div id="result" style="display:none;">
-    <img id="thumbnail" src="" alt="Thumbnail" />
-    <h3 id="title"></h3>
-    <p class="platform-tag" id="platformTag"></p>
-    <div class="choice-buttons">
-      <button class="choice-btn video-choice" onclick="showVideoOptions()">🎬 Video</button>
-      <button class="choice-btn audio-choice" onclick="showAudioOptions()">🎵 Audio</button>
+    <div class="tool-card coming">
+      <div class="tool-icon">🎵</div>
+      <div class="tool-name">Converter</div>
+      <div class="tool-desc">Convert between formats</div>
+      <div class="tool-badge soon">Coming Soon</div>
     </div>
-  </div>
 
-  <div id="videoOptions" style="display:none;">
-    <div class="options-box">
-      <p class="options-title">🎬 Select Video Quality</p>
-      <select id="qualitySelect"></select>
-      <button class="dl-btn" id="downloadBtn" onclick="downloadVideo()">⬇️ Download Now</button>
-      <div class="progress-container" id="videoProgress">
-        <div class="progress-label">
-          <span class="progress-text">Downloading...</span>
-          <span class="progress-percent" id="videoPercent">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="videoBar"></div>
-        </div>
-      </div>
+    <div class="tool-card coming">
+      <div class="tool-icon">🗜️</div>
+      <div class="tool-name">Compressor</div>
+      <div class="tool-desc">Compress video & images</div>
+      <div class="tool-badge soon">Coming Soon</div>
     </div>
-  </div>
 
-  <div id="audioOptions" style="display:none;">
-    <div class="options-box">
-      <p class="options-title">🎵 Audio Download</p>
-      <p class="audio-info">Best quality MP3 will be downloaded</p>
-      <button class="dl-btn audio-btn" id="audioBtn" onclick="downloadAudio()">🎵 Download Audio</button>
-      <div class="progress-container" id="audioProgress">
-        <div class="progress-label">
-          <span class="progress-text">Downloading...</span>
-          <span class="progress-percent" id="audioPercent">0%</span>
-        </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="audioBar"></div>
-        </div>
-      </div>
+    <div class="tool-card coming">
+      <div class="tool-icon">📄</div>
+      <div class="tool-name">PDF Tools</div>
+      <div class="tool-desc">Merge, split & compress PDF</div>
+      <div class="tool-badge soon">Coming Soon</div>
     </div>
+
+    <div class="tool-card coming">
+      <div class="tool-icon">🔗</div>
+      <div class="tool-name">QR Tools</div>
+      <div class="tool-desc">Generate & scan QR codes</div>
+      <div class="tool-badge soon">Coming Soon</div>
+    </div>
+
+    <div class="tool-card coming">
+      <div class="tool-icon">🤖</div>
+      <div class="tool-name">AI Tools</div>
+      <div class="tool-desc">AI-powered media features</div>
+      <div class="tool-badge soon">Coming Soon</div>
+    </div>
+
   </div>
 
-  <div class="toast" id="toast"></div>
+  <div class="footer">MediaHub v1.2 — Built with ❤️</div>
 
   <script src="js/utils.js"></script>
   <script src="js/settings.js"></script>
-  <script src="js/app.js"></script>
+  <div class="confetti-container" id="confettiContainer"></div>
+<div class="toast-success-final" id="successToastFinal">
+  <div class="tick-circle">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <span id="successToastText">Downloaded!</span>
+</div>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
 </body>
 </html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediaHub — Downloader</title>
+  <meta name="theme-color" content="#6366F1">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/settings.css">
+  <link rel="stylesheet" href="css/history.css">
+</head>
+<body style="justify-content: flex-start; padding-top: 0; display: flex; flex-direction: column; min-height: 100vh;">
+
+  <div class="sheet-overlay" id="settingsOverlay" onclick="toggleSettings(false)"></div>
+  <div class="bottom-sheet" id="settingsSheet">
+    <div class="drag-handle"></div>
+    <div class="header-main">
+      <h3>⚙️ Settings</h3>
+      <button class="close-sheet-btn" onclick="toggleSettings(false)">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="setting-row">
+        <div>
+          <div class="setting-title">Dark Mode</div>
+          <div class="setting-desc">Switch between dark and light theme</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="themeToggle" checked onchange="toggleTheme()">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+    <div class="sheet-footer">MediaHub v1.2 — Built with ❤️</div>
+  </div>
+  <!-- Background Queue Sheet -->
+<div class="queue-overlay" id="queueOverlay" onclick="closeQueue()"></div>
+<div class="queue-sheet" id="queueSheet">
+  <div class="drag-handle"></div>
+  <div class="queue-header">
+    <h3>⬇️ Active Downloads</h3>
+    <button class="close-queue-btn" onclick="closeQueue()">✕</button>
+  </div>
+  <div id="queueList"></div>
+</div>
+
+  <div class="sheet-overlay" id="historyOverlay" onclick="toggleHistory(false)"></div>
+  <div class="bottom-sheet" id="historySheet">
+    <div class="drag-handle"></div>
+    <div class="header-main">
+      <h3>📋 Download History</h3>
+      <button class="close-sheet-btn" onclick="toggleHistory(false)">✕</button>
+    </div>
+    <div id="historyList" class="history-list"></div>
+    <button class="clear-history-btn" onclick="clearHistory()">🗑️ Clear History</button>
+  </div>
+
+  <div class="dl-header">
+    <button class="back-btn" onclick="handleBack()">← Back</button>
+    <h2 class="dl-title">📥 Downloader</h2>
+    <div class="header-right">
+  <button class="history-trigger" onclick="toggleHistory(true)">🕰️</button>
+  <button class="dl-queue-btn" id="queueBtn" onclick="openQueue()">
+    ⬇️
+    <span class="queue-dot" id="queueDot"></span>
+  </button>
+</div>
+  </div>
+<div class="dl-hero" style="margin-top:110px;">
+  <h1>🎬 MediaHub</h1>
+  <p class="tagline">Download Video, Audio & Thumbnail with just a link</p>
+</div>
+
+
+  <div class="platforms-section" style="margin-top: 1px;">
+  <p class="platforms-title">Supported Platforms</p>
+  <div class="platforms">
+  <span class="platform">▶ YouTube</span>
+  <span class="platform">🎵 TikTok</span>
+  <span class="platform">📘 Facebook</span>
+  <span class="platform">📸 Instagram</span>
+</div>
+</div>
+<div style="flex: 0.3;"></div>
+  <div class="input-box">
+    <div class="url-wrapper">
+  <input type="text" id="urlInput" placeholder="Paste URL..." />
+  <button class="paste-icon-btn" onclick="pasteUrl()">📋</button>
+</div>
+<div class="buttons">
+  <button onclick="getVideo()">🔎 Analyze Link</button>
+</div>
+<div id="urlError" style="display:none; background:#fee2e2; border:1px solid #ef4444; border-radius:12px; padding:14px 16px; margin-top:10px; text-align:center;">
+  <p style="color:#ef4444; font-size:0.9rem; font-weight:600;">❌ Invalid Link!</p>
+  <p style="color:#ef4444; font-size:0.8rem; margin-top:4px;">Please provide a YouTube, TikTok, Facebook or Instagram link.</p>
+</div>
+</div>
+  </div>
+
+  <div class="loader" id="loader">
+    <div class="spinner">
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+    <p id="loaderText">Analyzing your link...</p>
+  </div>
+
+  <div id="result" style="display:none;">
+    <img id="thumbnail" src="" alt="Thumbnail" />
+    <h3 id="title"></h3>
+    <p class="platform-tag" id="platformTag"></p>
+    <p class="video-info" id="videoInfo" style="display:none;"></p>
+    <p class="download-label">Download as:</p>
+    <div class="choice-buttons">
+      <button class="choice-btn video-choice" onclick="showVideoOptions()">🎬 Video</button>
+      <button class="choice-btn audio-choice" onclick="showAudioOptions()">🎵 Audio</button>
+      <button class="choice-btn thumb-choice" onclick="showThumbOptions()">🖼️ Thumb</button>
+    </div>
+  </div>
+<div id="thumbOptions" style="display:none;">
+  <div class="options-box">
+    <p class="options-title">🖼️ Thumbnail Download</p>
+    <p class="audio-info">Thumbnail will be saved as JPG</p>
+    <button class="dl-btn audio-btn" id="thumbBtn" onclick="downloadThumbnail()">⬇️ Download Thumbnail</button>
+    <div class="progress-container" id="thumbProgress">
+      <div class="progress-label">
+        <span class="progress-text">Downloading...</span>
+        <span class="progress-percent" id="thumbPercent">0%</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="thumbBar"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="dismiss-hint" id="thumbDismissHint">👆 Tap anywhere on screen to continue other work</div>
+  <div id="videoOptions" style="display:none;">
+    <div class="options-box">
+      <p class="options-title">🎬 Select Video Quality</p>
+      <select id="qualitySelect"></select>
+      <button class="dl-btn" id="downloadBtn" onclick="downloadVideo()">⬇️ Download Now</button>
+      <div class="progress-container" id="videoProgress">
+        <div class="progress-label">
+          <span class="progress-text">Downloading...</span>
+          <span class="progress-percent" id="videoPercent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="videoBar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dismiss-hint" id="videoDismissHint">👆 Tap anywhere on screen to continue other work</div>
+
+  <div id="audioOptions" style="display:none;">
+    <div class="options-box">
+      <p class="options-title">🎵 Audio Download</p>
+      <p class="audio-info">Best quality MP3 will be downloaded</p>
+      <button class="dl-btn audio-btn" id="audioBtn" onclick="downloadAudio()">🎵 Download Audio</button>
+      <div class="progress-container" id="audioProgress">
+        <div class="progress-label">
+          <span class="progress-text">Downloading...</span>
+          <span class="progress-percent" id="audioPercent">0%</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="audioBar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="dismiss-hint" id="audioDismissHint">👆 Tap anywhere on screen to continue other work</div>
+  <div id="successCard" style="display:none; padding: 0 16px; margin-top: 16px;">
+  <div class="success-card">
+    <div class="success-icon">✅</div>
+    <div class="success-title">Download Complete!</div>
+    <div class="success-desc">Saved! Check your device Downloads folder.</div>
+  </div>
+  <div class="download-again">
+    <button onclick="resetDownloader()">⬇️ Download Again — Video & Audio & Thumb</button>
+  </div>
+</div>
+<div class="dl-footer">🔒 Safe & Secure Download</div>
+  <div class="toast" id="toast"></div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/history.js"></script>
+  <script src="js/app.js"></script>
+  <div class="confetti-container" id="confettiContainer"></div>
+<div class="toast-success-final" id="successToastFinal">
+  <div class="tick-circle">
+    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <span id="successToastText">Downloaded!</span>
+</div>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js');
+  }
+</script>
+</body>
+</html>
